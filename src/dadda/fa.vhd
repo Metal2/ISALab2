@@ -26,13 +26,13 @@ signal s1,co1,co2: std_logic; --intermediate sum and carry bits
 
 begin
 
-HA1: port map(
+HA1: HA port map(
 	a => a,
 	b => b,
 	s => s1,
 	co => co1);
 
-HA2: port map
+HA2: HA port map(
 	a => c_in,
 	b => s1,
 	s => sum,

@@ -4,28 +4,31 @@ use IEEE.std_logic_unsigned.all;
 
 entity dadda_multiplier is
 	port(
-		A_in  : in std_logic_vector(31 downto 0);
+		A_in  : in std_logic_vector(31 downto 0); 
 		B_in  : in std_logic_vector(31 downto 0);
 		P_out : out std_logic_vector(63 downto 0));
 end dadda_multiplier;
 
 architecture structural of dadda_multiplier is
 	
-	type pp             is array 0 to 16 of std_logic_vector(32 downto 0);
-	type FA_sum_array   is array 0 to 5  of std_logic_vector(119 downto 0);
-	type FA_carry_array is array 0 to 5  of std_logic_vector(119 downto 0);
-	type HA_sum_array   is array 0 to 5  of std_logic_vector(11 downto 0);
-	type HA_carry_array is array 0 to 5  of std_logic_vector(11 downto 0);
+	type pp             is array (0 to 16) of std_logic_vector(32 downto 0);
+	type FA_sum_array   is array (0 to 5 ) of std_logic_vector(119 downto 0);
+	type FA_carry_array is array (0 to 5 ) of std_logic_vector(119 downto 0);
+	type HA_sum_array   is array (0 to 5 ) of std_logic_vector(11 downto 0);
+	type HA_carry_array is array (0 to 5 ) of std_logic_vector(11 downto 0);
 	
 	signal a : pp;	                          --partial product array							
 	signal b : std_logic_vector(34 downto 0); --'0'& multiplier & "00"
-	signal s : std_logic_vector(15 downto 0); --sign extension bit
-	signal sn: std_logic_vector(15 downto 0); --n sign extension bit
+	signal s : std_logic_vector(16 downto 0); --sign extension bit   (in realtà s e sn sono 15 downto 0)
+	signal sn: std_logic_vector(16 downto 0); --n sign extension bit (ho messo 16 per fare corrisponsdere la lut ma il s(16) e sn(16) non verranno mai usati).
 
 	signal sf: FA_sum_array;
 	signal cf: FA_carry_array;
 	signal sh: HA_sum_array;
 	signal ch: HA_carry_array;
+
+	signal final_sum1: std_logic_vector(64 downto 0);
+	signal final_sum2: std_logic_vector(64 downto 0);
 
 	component FA is
 	port(
@@ -55,7 +58,7 @@ architecture structural of dadda_multiplier is
 begin
 
 sn <= not(s);
-b <= '0'&B_in&"00";
+b <= "00"&B_in&'0';
 
 --LUT PORT MAP
 LUT_0 : lut  port map(A_in,b(2 downto 0),s(0),a(0));
@@ -644,11 +647,16 @@ HA_5_1:HA port map ( a(0)(3),a(1)(1),ch(5)(1),sh(5)(1) );
 -------------------
 ---FINAL ADDER-----
 
+--final_sum1<=
+--a(0)(0)&a(0)(1)&sh(5)(0)&ch(5)(0)&ch(5)(1)&cf(5)(0)&cf(5)(1)&cf(5)(2)&cf(5)(3)&cf(5)(4)&cf(5)(5)&cf(5)(6)&cf(5)(7)&cf(5)(8)&cf(5)(9)&cf(5)(10)&cf(5)(11)&cf(5)(12)&cf(5)(13)&cf(5)(14)&cf(5)(15)&cf(5)(16)&cf(5)(17)&cf(5)(18)&cf(5)(19)&cf(5)(20)&cf(5)(21)&cf(5)(22)&cf(5)(23)&cf(5)(24)&cf(5)(25)&cf(5)(26)&cf(5)(27)&cf(5)(28)&cf(5)(29)&cf(5)(30)&cf(5)(31)&cf(5)(32)&cf(5)(33)&cf(5)(34)&cf(5)(35)&cf(5)(36)&cf(5)(37)&cf(5)(38)&cf(5)(39)&cf(5)(40)&cf(5)(41)&cf(5)(42)&cf(5)(43)&cf(5)(44)&cf(5)(45)&cf(5)(46)&cf(5)(47)&cf(5)(48)&cf(5)(49)&cf(5)(50)&cf(5)(51)&cf(5)(52)&cf(5)(53)&cf(5)(54)&cf(5)(55)&cf(5)(56)&cf(5)(57)&cf(5)(58)&cf(5)(59);
+--final_sum2<=
+--s(0)&'0'&s(1)&sh(5)(1)&sf(5)(0)&sf(5)(1)&sf(5)(2)&sf(5)(3)&sf(5)(4)&sf(5)(5)&sf(5)(6)&sf(5)(7)&sf(5)(8)&sf(5)(9)&sf(5)(10)&sf(5)(11)&sf(5)(12)&sf(5)(13)&sf(5)(14)&sf(5)(15)&sf(5)(16)&sf(5)(17)&sf(5)(18)&sf(5)(19)&sf(5)(20)&sf(5)(21)&sf(5)(22)&sf(5)(23)&sf(5)(24)&sf(5)(25)&sf(5)(26)&sf(5)(27)&sf(5)(28)&sf(5)(29)&sf(5)(30)&sf(5)(31)&sf(5)(32)&sf(5)(33)&sf(5)(34)&sf(5)(35)&sf(5)(36)&sf(5)(37)&sf(5)(38)&sf(5)(39)&sf(5)(40)&sf(5)(41)&sf(5)(42)&sf(5)(43)&sf(5)(44)&sf(5)(45)&sf(5)(46)&sf(5)(47)&sf(5)(48)&sf(5)(49)&sf(5)(50)&sf(5)(51)&sf(5)(52)&sf(5)(53)&sf(5)(54)&sf(5)(55)&sf(5)(56)&sf(5)(57)&sf(5)(58)&sf(5)(59)&'0';
 
-
-
-P_out <= 
-
+P_out <= final_sum1(63 downto 0)+final_sum2(63 downto 0);
+final_sum1<=
+cf(5)(59)&cf(5)(58)&cf(5)(57)&cf(5)(56)&cf(5)(55)&cf(5)(54)&cf(5)(53)&cf(5)(52)&cf(5)(51)&cf(5)(50)&cf(5)(49)&cf(5)(48)&cf(5)(47)&cf(5)(46)&cf(5)(45)&cf(5)(44)&cf(5)(43)&cf(5)(42)&cf(5)(41)&cf(5)(40)&cf(5)(39)&cf(5)(38)&cf(5)(37)&cf(5)(36)&cf(5)(35)&cf(5)(34)&cf(5)(33)&cf(5)(32)&cf(5)(31)&cf(5)(30)&cf(5)(29)&cf(5)(28)&cf(5)(27)&cf(5)(26)&cf(5)(25)&cf(5)(24)&cf(5)(23)&cf(5)(22)&cf(5)(21)&cf(5)(20)&cf(5)(19)&cf(5)(18)&cf(5)(17)&cf(5)(16)&cf(5)(15)&cf(5)(14)&cf(5)(13)&cf(5)(12)&cf(5)(11)&cf(5)(10)&cf(5)(9)&cf(5)(8)&cf(5)(7)&cf(5)(6)&cf(5)(5)&cf(5)(4)&cf(5)(3)&cf(5)(2)&cf(5)(1)&cf(5)(0)&ch(5)(1)&ch(5)(0)&sh(5)(0)&a(0)(1)&a(0)(0);
+final_sum2<=
+'0'&sf(5)(59)&sf(5)(58)&sf(5)(57)&sf(5)(56)&sf(5)(55)&sf(5)(54)&sf(5)(53)&sf(5)(52)&sf(5)(51)&sf(5)(50)&sf(5)(49)&sf(5)(48)&sf(5)(47)&sf(5)(46)&sf(5)(45)&sf(5)(44)&sf(5)(43)&sf(5)(42)&sf(5)(41)&sf(5)(40)&sf(5)(39)&sf(5)(38)&sf(5)(37)&sf(5)(36)&sf(5)(35)&sf(5)(34)&sf(5)(33)&sf(5)(32)&sf(5)(31)&sf(5)(30)&sf(5)(29)&sf(5)(28)&sf(5)(27)&sf(5)(26)&sf(5)(25)&sf(5)(24)&sf(5)(23)&sf(5)(22)&sf(5)(21)&sf(5)(20)&sf(5)(19)&sf(5)(18)&sf(5)(17)&sf(5)(16)&sf(5)(15)&sf(5)(14)&sf(5)(13)&sf(5)(12)&sf(5)(11)&sf(5)(10)&sf(5)(9)&sf(5)(8)&sf(5)(7)&sf(5)(6)&sf(5)(5)&sf(5)(4)&sf(5)(3)&sf(5)(2)&sf(5)(1)&sf(5)(0)&sh(5)(1)&s(1)&'0'&s(0);
 
 
 end structural;

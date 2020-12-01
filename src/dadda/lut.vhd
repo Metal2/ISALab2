@@ -4,10 +4,10 @@ use IEEE.std_logic_unsigned.all;
 
 entity lut is
 	port(
-		mult  : in std_logic_vector(31 downto 0);		
-		in_lut: in std_logic_vector(2 downto 0);
-		s     : out std_logic;                   --sign bit
-		mbe_pp: out std_logic_vector(32 downto 0));
+		mult  : in std_logic_vector(31 downto 0);	--multiplicand
+		in_lut: in std_logic_vector(2 downto 0); 	--multiplier bits
+		s     : out std_logic;                      --sign bit
+		mbe_pp: out std_logic_vector(32 downto 0)); --modified booth partial product
 end lut;
 
 architecture behavioral of lut is
@@ -18,7 +18,9 @@ signal n_A    : std_logic_vector(31 downto 0);
 
 begin
 
-n_A <= not(mult)+1;
+n_A <= not(mult)+1; --inverted multiplicand
+mbe_pp<=tmp_mbe;
+s<=tmp_s;
 
 p_LUT: process(in_lut)
 	begin
@@ -41,6 +43,7 @@ p_LUT: process(in_lut)
 					  tmp_s <= '1';
 		when others =>tmp_mbe <= (others=>'0');
 					  tmp_s <= '1';
+		end case;
 	end process;
 
 end behavioral;
