@@ -14,32 +14,45 @@ architecture behavioral of lut is
 
 signal tmp_mbe: std_logic_vector(32 downto 0);
 signal tmp_s  : std_logic;
-signal n_A    : std_logic_vector(31 downto 0);
+
+signal n_A    : std_logic_vector(32 downto 0);
+signal A      : std_logic_vector(32 downto 0);
+
 
 begin
 
-n_A <= not(mult)+1; --inverted multiplicand
+
+
+--output assignment--
 mbe_pp<=tmp_mbe;
 s<=tmp_s;
+---------------------
 
-p_LUT: process(in_lut)
+
+--partial products
+A   <= '0'&mult;  --multiplicand
+n_A <= not(A); --inverted multiplicand
+
+  
+
+p_LUT: process(in_lut,A,n_A)
 	begin
 	case in_lut is
-		when "000" => tmp_mbe <= (others=>'0');
+		when "000" => tmp_mbe <= (others=>'0'); -- 0
 					  tmp_s <= '0';
-		when "001" => tmp_mbe <= '0'&mult;
+		when "001" => tmp_mbe <= A; -- A
 					  tmp_s <= '0';
-		when "010" => tmp_mbe <= '0'&mult;
+		when "010" => tmp_mbe <= A; -- A
 					  tmp_s <= '0';
-		when "011" => tmp_mbe <= mult(31 downto 0)&'0';
+		when "011" => tmp_mbe <= A(31 downto 0)&'0'; -- 2A
 					  tmp_s <= '0';
-		when "100" => tmp_mbe <= n_A&'0';
+		when "100" => tmp_mbe <= n_A(31 downto 0)&'0'; -- -2A
 					  tmp_s <= '1';
-		when "101" => tmp_mbe <= '1'&n_A;
+		when "101" => tmp_mbe <= n_A; -- -A
 					  tmp_s <= '1';
-		when "110" => tmp_mbe <= '1'&n_A;
+		when "110" => tmp_mbe <= n_A; -- -A
 					  tmp_s <= '1';
-		when "111" => tmp_mbe <= (others=> '0');
+		when "111" => tmp_mbe <= (others=> '1'); -- -0
 					  tmp_s <= '1';
 		when others =>tmp_mbe <= (others=>'0');
 					  tmp_s <= '1';
