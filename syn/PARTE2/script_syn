@@ -1,0 +1,47 @@
+define_design_lib WORK -path ./WORK
+
+analyze -f vhdl -lib work ../src/common/fpnormalize_fpnormalize.vhd
+analyze -f vhdl -lib work ../src/common/fpround_fpround.vhd
+analyze -f vhdl -lib work ../src/common/packfp_packfp.vhd
+analyze -f vhdl -lib work ../src/common/unpackfp_unpackfp.vhd
+analyze -f vhdl -lib work ../src/mult/fpmul_stage1_struct.vhd
+analyze -f vhdl -lib work ../src/mult/fpmul_stage3_struct.vhd
+analyze -f vhdl -lib work ../src/mult/fpmul_stage4_struct.vhd
+analyze -f vhdl -lib work ../src/mult/fpmul_pipeline.vhd
+analyze -f vhdl -lib work ../src/new/reg.vhd
+
+
+#FOR GENERIC MULTIPLIER SYNTHESIS
+analyze -f vhdl -lib work ../src/new/fpmul_stage2_struct.vhd
+
+
+#FOR MBE DADDA SYNTHESIS
+#analyze -f vhdl -lib work ../src/dadda/ha.vhd
+#analyze -f vhdl -lib work ../src/dadda/fa.vhd
+#analyze -f vhdl -lib work ../src/dadda/lut.vhd
+#analyze -f vhdl -lib work ../src/dadda/dadda_multiplier.vhd
+#analyze -f vhdl -lib work ../src/dadda/fpmul_stage2_struct.vhd
+
+
+elaborate FPmul -arch pipeline -lib WORK > ./elaborate.txt
+uniquify
+link
+
+create_clock -name MY_CLK -period 0.78 clk 
+set_dont_touch_network MY_CLK
+set_clock_uncertainty 0.07 [get_clocks MY_CLK]
+set_input_delay 0.5 -max -clock MY_CLK [remove_from_collection [all_inputs] clk]
+set_output_delay 0.5 -max -clock MY_CLK [all_outputs]
+set OLOAD [load_of NangateOpenCellLibrary/BUF_X4/A]
+set_load $OLOAD [all_outputs]
+
+ungroup -all -flatten
+
+compile
+optimize_registers
+
+#compile_ultra
+
+report_timing > ./time_report.txt
+report_area > ./area_report.txt
+

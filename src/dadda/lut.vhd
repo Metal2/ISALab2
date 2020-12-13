@@ -46,7 +46,7 @@ p_LUT: process(in_lut,A,n_A)
 					  tmp_s <= '0';
 		when "011" => tmp_mbe <= A(31 downto 0)&'0'; -- 2A
 					  tmp_s <= '0';
-		when "100" => tmp_mbe <= n_A(31 downto 0)&'0'; -- -2A
+		when "100" => tmp_mbe <= n_A(31 downto 0)&'1'; -- -2A
 					  tmp_s <= '1';
 		when "101" => tmp_mbe <= n_A; -- -A
 					  tmp_s <= '1';

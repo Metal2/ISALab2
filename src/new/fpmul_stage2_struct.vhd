@@ -91,21 +91,7 @@ signal EXP_neg_int_tmp :std_logic;
 	end component;
 
 
-	component dadda_multiplier is
-	port(
-		A_in  : in std_logic_vector(31 downto 0);
-		B_in  : in std_logic_vector(31 downto 0);
-		P_out : out std_logic_vector(63 downto 0));
-	end component;
-
-	BEGIN
-
-	DADDA_MULT: dadda_multiplier 
-	port map(
-	A_in => A_SIG,
-	B_in => B_SIG,
-	P_out => prod_tmp);
-
+BEGIN
    -- Architecture concurrent statements
    -- HDL Embedded Text Block 1 sig
    -- eb1 1
@@ -175,12 +161,12 @@ signal EXP_neg_int_tmp :std_logic;
    END PROCESS I4combo;
 
    -- ModuleWare code(v1.1) for instance 'I2' of 'mult'
-   --I2combo : PROCESS (A_SIG, B_SIG)
-   --VARIABLE dtemp : unsigned(63 DOWNTO 0);
-   --BEGIN
-   --   dtemp := (unsigned(A_SIG) * unsigned(B_SIG));
-   --   prod_tmp <= std_logic_vector(dtemp);
-   --END PROCESS I2combo;
+   I2combo : PROCESS (A_SIG, B_SIG)
+   VARIABLE dtemp : unsigned(63 DOWNTO 0);
+   BEGIN
+      dtemp := (unsigned(A_SIG) * unsigned(B_SIG));
+      prod_tmp <= std_logic_vector(dtemp);
+   END PROCESS I2combo;
 	
 reg_out: reg generic map (N=>64)
 				port map(

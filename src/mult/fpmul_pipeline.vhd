@@ -81,16 +81,16 @@ ARCHITECTURE pipeline OF FPmul IS
 
    --------------------------------------------
    --MY COMPONENT------------------------------
-   --COMPONENT REG
-   --GENERIC(
-   -- N: integer := 32);
-   --PORT(
-	--	clk   : in std_logic;
-	--	rst_n : in std_logic;
-	--	ld    : in std_logic;
-	--	d_in  : in  std_logic_vector(N-1 downto 0);
-	--	d_out : out std_logic_vector(N-1 downto 0));
-   --END COMPONENT;
+   COMPONENT REG
+   GENERIC(
+    N: integer := 32);
+   PORT(
+		clk   : in std_logic;
+		rst_n : in std_logic;
+		ld    : in std_logic;
+		d_in  : in  std_logic_vector(N-1 downto 0);
+		d_out : out std_logic_vector(N-1 downto 0));
+   END COMPONENT;
 
 
 
@@ -179,33 +179,33 @@ ARCHITECTURE pipeline OF FPmul IS
 BEGIN
 	--------MY PORT MAP--------
     ---------------------------
-  --  IN_REGA: REG
---	GENERIC MAP(
---		N => 32)	
---	PORT MAP(
---		clk => clk,
---		rst_n => '1',
---		ld => '1',
---		d_in => FP_A,
---		d_out => FPA_REG);
+    IN_REGA: REG
+	GENERIC MAP(
+		N => 32)	
+	PORT MAP(
+		clk => clk,
+		rst_n => '1',
+		ld => '1',
+		d_in => FP_A,
+		d_out => FPA_REG);
 
---	IN_REGB: REG
---	GENERIC MAP(
---		N => 32)	
---	PORT MAP(
---		clk => clk,
---		rst_n => '1',
---		ld => '1',
---		d_in => FP_B,
---		d_out => FPB_REG);
+	IN_REGB: REG
+	GENERIC MAP(
+		N => 32)	
+	PORT MAP(
+		clk => clk,
+		rst_n => '1',
+		ld => '1',
+		d_in => FP_B,
+		d_out => FPB_REG);
    -----------------------------------
    -----------------------------------
 
    -- Instance port mappings
    I1 : FPmul_stage1
       PORT MAP (
-         FP_A            => FP_A,--FPA_REG
-         FP_B            => FP_B,--FPB_REG
+         FP_A            => FPA_REG,--FP_A
+         FP_B            => FPB_REG, --FP_B
          clk             => clk,
          A_EXP           => A_EXP,
          A_SIG           => A_SIG,

@@ -1,0 +1,27 @@
+#include <iostream>
+#include<vector>
+#include<stdlib.h>
+#include<fstream>
+#include<string>
+#include<sstream>
+
+#define NBIT 32
+
+using namespace std;
+
+int main()
+{
+    ofstream fout("vhdl_lut.txt");
+
+    int i,k;
+    k=0;
+    for(i=0;i<17;i++)
+    {
+        fout<<"LUT_"<<i<<": lut  port map(A_in,b("<<k+2<<" downto "<<k<<"),s("<<i<<"),a("<<i<<"));"<<endl;
+        k=k+2;
+    }
+	fout.close();
+
+    return 0;
+}
+
