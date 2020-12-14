@@ -1,4 +1,5 @@
 library IEEE;
+
 use IEEE.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 
@@ -20,7 +21,6 @@ component HA is
 		s : out std_logic;
 		co: out std_logic);
 end component;
-
 
 signal s1,co1,co2: std_logic; --intermediate sum and carry bits
 
