@@ -6,7 +6,7 @@ Version: O-2018.06-SP4
 Date   : Tue Nov 24 10:15:12 2020
 ****************************************
 
-Library(s) Used:
+Library(s) Used: abc
 
     NangateOpenCellLibrary (File: /software/dk/nangate45/synopsys/NangateOpenCellLibrary_typical_ecsm_nowlm.db)
 
