@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 
---HALF ADDER
 entity HA is
 	port(
 		a : in std_logic;
